@@ -5,6 +5,7 @@ import com.santander.msauthservices.dto.LoginRequestDto;
 import com.santander.msauthservices.exception.BadRequestException;
 import com.santander.msauthservices.util.JWTUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -20,6 +21,7 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/v1/login")
 @AllArgsConstructor
+@Slf4j
 public class LoginController {
 
     private final AuthenticationProvider authenticationProvider;
@@ -30,8 +32,11 @@ public class LoginController {
     public ResponseEntity<String> sign(@Validated @RequestBody LoginRequestDto login, Locale locale) {
         try {
             authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
+            log.info(messageSource.getMessage(UserConstants.USER_LOGIN_VALID, new Object[]{login.getEmail()}, locale));
         } catch (Exception ex) {
-            throw new BadRequestException(messageSource.getMessage(UserConstants.USER_LOGIN_INVALID, new Object[] {}, locale));
+            String message = messageSource.getMessage(UserConstants.USER_LOGIN_INVALID, new Object[]{}, locale);
+            log.error(message);
+            throw new BadRequestException(message);
         }
 
         String token = String.format("{\"token\": \"%s\"}", jwtUtil.generateToken(login.getEmail()));
