@@ -13,6 +13,58 @@ The system follows a microservices architecture with:
 - **Centralized service discovery** via **Eureka**.
 - **Centralized logging** — every service publishes structured logs to RabbitMQ, which are shipped to the **ELK stack** for observability.
 
+## Flow
+<pre>
+                           INÍCIO
+                              │
+                              ▼
+                O que aconteceu com o cliente?
+                              │
+      ┌───────────────┬───────────────┬───────────────┬───────────────┐
+      │               │               │               │
+      ▼               ▼               ▼               ▼
+ Roubo/Furto      Transação        Saque com      Roubo de
+ do cartão        sob coação       roubo          bens pessoais
+      │               │               │               │
+      ▼               ▼               ▼               ▼
+ Cartão foi      Cliente foi     O dinheiro      Bolsa/mochila/
+ bloqueado?      obrigado a      foi roubado     carteira foi
+                 fazer Pix,       até 8 horas     roubada junto
+                 saque ou compra  após saque?     com o cartão?
+      │               │               │               │
+   Sim│ Não       Sim │ Não       Sim │ Não       Sim │ Não
+      ▼               ▼               ▼               ▼
+ Solicitar      Avaliar se      Solicitar      Verificar se
+ documentos     há cobertura    documentos     os bens estão
+ e abrir        pela apólice    e abrir        previstos na
+ sinistro                       sinistro       cobertura
+      │               │               │               │
+      └───────────────┴───────────────┴───────────────┘
+                              │
+                              ▼
+                 Enviar documentação exigida
+                              │
+                              ▼
+                 Análise da seguradora
+                              │
+                    ┌─────────┴─────────┐
+                    │                   │
+                    ▼                   ▼
+            Cobertura aprovada    Cobertura negada
+                    │                   │
+                    ▼                   ▼
+        Indenização/Assistência   Informar motivo
+             conforme apólice     e orientar cliente
+</pre>
+
+## The project is still in the development phase.
+### Eureka Server 
+![](./docs/Eureka-Server.png)
+### Submitting the questionnaire
+![](./docs/Start-questionnaire0.png)
+![](./docs/Start-questionnaire1.png)
+![](./docs/Start-questionnaire2.png)
+
 ## Services
 
 | Service | Responsibility |
