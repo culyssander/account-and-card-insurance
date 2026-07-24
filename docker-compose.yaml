@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: auth-services
+    container_name: auth-db  # Alterado para ser único
     restart: always
     environment:
       POSTGRES_USER: userDB
@@ -10,24 +10,47 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_user_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
+
+  policyDB:
+    image: postgres:16-alpine
+    container_name: policy-db  # Alterado para ser único
+    restart: always
+    environment:
+      POSTGRES_USER: policyDB
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: policyDB
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_policy_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
 
   rabbitmq:
     image: rabbitmq:4-management
     container_name: rabbitmq
     restart: unless-stopped
-
     ports:
       - "5672:5672"   # AMQP
       - "15672:15672" # Management UI
-
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  wiremock:
+    image: wiremock/wiremock:3.9.1
+    container_name: wiremock-products
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./mappings:/home/wiremock/mappings
+      - ./__files:/home/wiremock/__files
+    command:
+      - "--global-response-templating"
+      - "--verbose"
+
 volumes:
-  postgres_data:
+  postgres_user_data:    # Separado
+  postgres_policy_data:  # Separado
   rabbitmq_data:
