@@ -1,4 +1,4 @@
-package com.santander.mspolicyservices.model;
+package com.santander.protocoloservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

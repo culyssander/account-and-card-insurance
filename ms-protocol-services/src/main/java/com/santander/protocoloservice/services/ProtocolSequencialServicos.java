@@ -1,7 +1,7 @@
-package com.santander.mspolicyservices.services;
+package com.santander.protocoloservice.services;
 
-import com.santander.mspolicyservices.model.ProtocolSequencial;
-import com.santander.mspolicyservices.repository.ProtocolSequencialRepository;
+import com.santander.protocoloservice.model.ProtocolSequencial;
+import com.santander.protocoloservice.repository.ProtocolSequencialRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

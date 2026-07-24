@@ -1,5 +1,6 @@
 package com.santander.mspolicyservices.services;
 
+import com.santander.mspolicyservices.clients.ProtocolSequencialClients;
 import com.santander.mspolicyservices.constants.PolicyConstants;
 import com.santander.mspolicyservices.dto.PolicyRequestDto;
 import com.santander.mspolicyservices.dto.PolicyResponseDto;
@@ -28,7 +29,7 @@ public class PolicyServices {
 
     private PolicyRepository policyRepository;
     private ProductsServicesClients productsServicesClients;
-    private ProtocolSequencialServicos protocolSequencialServicos;
+    private ProtocolSequencialClients protocolSequencialClients;
     private UserServicesClients userServicesClients;
     private MessageSource messageSource;
     private JwtUtil jwtUtil;
@@ -37,7 +38,7 @@ public class PolicyServices {
         String productCode = policyRequest.getProductCode();
         UserResponseDto userLogado = getUserLogged(request, locale);
         ProductResponseDto response = getProductsByCode(productCode, locale);
-        String protocol = protocolSequencialServicos.generateProtocol(productCode);
+        String protocol = protocolSequencialClients.generateProtocol(productCode);
 
         Policy policy = Policy.builder()
                 .policyNumber(protocol)

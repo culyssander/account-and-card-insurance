@@ -1,6 +1,6 @@
-package com.santander.mspolicyservices.repository;
+package com.santander.protocoloservice.repository;
 
-import com.santander.mspolicyservices.model.ProtocolSequencial;
+import com.santander.protocoloservice.model.ProtocolSequencial;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
