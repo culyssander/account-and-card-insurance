@@ -3,5 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/ms-auth-services/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-policy-services/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-protocol-services/src/main/java" charset="UTF-8" />
   </component>
 </project>
