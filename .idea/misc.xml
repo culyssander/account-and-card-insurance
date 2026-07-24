@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/ms-auth-services/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-policy-services/pom.xml" />
       </list>
     </option>
   </component>
