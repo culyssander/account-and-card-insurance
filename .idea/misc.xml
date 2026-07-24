@@ -8,6 +8,9 @@
         <option value="$PROJECT_DIR$/ms-policy-services/pom.xml" />
         <option value="$PROJECT_DIR$/protocolo-service/pom.xml" />
         <option value="$PROJECT_DIR$/protocol-services/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-service/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-protocol-services/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
       </list>
     </option>
   </component>
