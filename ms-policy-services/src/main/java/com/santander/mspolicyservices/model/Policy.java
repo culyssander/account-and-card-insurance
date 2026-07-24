@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class Policy {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "policy_id_seq")
     private BigInteger id;
 
     @Column(name = "policy_number")
