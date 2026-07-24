@@ -1,0 +1,26 @@
+[
+  {
+    "id": "11111111",
+    "code": "SCC",
+    "name": "Seguro Conta e Cartão",
+    "description": "Proteção para conta, cartão e transações financeiras",
+    "active": true,
+    "createdAt": "2025-01-01T10:00:00"
+  },
+  {
+    "id": "22222222",
+    "code": "AUTO",
+    "name": "Seguro Auto",
+    "description": "Seguro para veículos",
+    "active": true,
+    "createdAt": "2025-01-01T10:00:00"
+  },
+  {
+    "id": "33333333",
+    "code": "HOME",
+    "name": "Seguro Residencial",
+    "description": "Proteção para residência",
+    "active": true,
+    "createdAt": "2025-01-01T10:00:00"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/products/AUTO/coverages"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "coverages-auto.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

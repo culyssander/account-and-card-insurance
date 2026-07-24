@@ -1,0 +1,20 @@
+[
+  {
+    "code": "COLLISION",
+    "name": "Colisão",
+    "description": "Cobertura contra colisão",
+    "mandatory": true
+  },
+  {
+    "code": "THEFT",
+    "name": "Roubo",
+    "description": "Cobertura contra roubo",
+    "mandatory": true
+  },
+  {
+    "code": "GLASS",
+    "name": "Vidros",
+    "description": "Cobertura para vidros",
+    "mandatory": false
+  }
+]

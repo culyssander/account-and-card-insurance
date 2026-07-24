@@ -1,0 +1,20 @@
+[
+  {
+    "code": "FIRE",
+    "name": "Incêndio",
+    "description": "Cobertura contra incêndio",
+    "mandatory": true
+  },
+  {
+    "code": "THEFT",
+    "name": "Roubo",
+    "description": "Cobertura contra roubo",
+    "mandatory": false
+  },
+  {
+    "code": "ELECTRIC",
+    "name": "Danos Elétricos",
+    "description": "Cobertura para danos elétricos",
+    "mandatory": false
+  }
+]

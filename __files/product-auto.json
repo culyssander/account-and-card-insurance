@@ -1,0 +1,8 @@
+{
+  "id": "22222222",
+  "code": "AUTO",
+  "name": "Seguro Auto",
+  "description": "Seguro para veículos",
+  "active": true,
+  "createdAt": "2025-01-01T10:00:00"
+}

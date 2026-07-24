@@ -1,0 +1,28 @@
+{
+  "id": "11111111",
+  "code": "SCC",
+  "name": "Seguro Conta e Cartão",
+  "description": "Proteção para conta, cartão e transações financeiras",
+  "active": true,
+  "createdAt": "2025-01-01T10:00:00",
+  "coverages": [
+  {
+    "code": "FRAUD",
+    "name": "Fraudes",
+    "description": "Cobertura contra fraudes",
+    "mandatory": true
+  },
+  {
+    "code": "PIX",
+    "name": "PIX",
+    "description": "Cobertura para transações PIX",
+    "mandatory": true
+  },
+  {
+    "code": "THEFT",
+    "name": "Roubo",
+    "description": "Roubo do cartão",
+    "mandatory": false
+  }
+]
+}
