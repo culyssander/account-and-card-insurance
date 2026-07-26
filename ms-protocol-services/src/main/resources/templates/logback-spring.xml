@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration debug="true">
+
+    <property resource="application.properties" />
+
+    <springProperty scope="context" name="rabbitAddresses" source="spring.rabbitmq.addresses" defaultValue="localhost:5672"/>
+    <springProperty scope="context" name="rabbitUsername" source="spring.rabbitmq.username" defaultValue="guest"/>
+    <springProperty scope="context" name="rabbitPassword" source="spring.rabbitmq.password" defaultValue="guest"/>
+    <springProperty scope="context" name="rabbitExchange" source="spring.rabbitmq.logging.exchange" defaultValue="LOGGING.MESSAGE.EXCHANGE"/>
+    <springProperty scope="context" name="rabbitRoutingKey" source="spring.rabbitmq.logging.routerkey" defaultValue="LOGGING.MESSAGE.KEY"/>
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="app-desconhecida"/>
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>false</includeContext>
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <timeZone>Brazil/East</timeZone>
+            <customFields>{"component": "${appName}"}</customFields>
+        </encoder>
+    </appender>
+
+    <appender name="RabbitMQ" class="org.springframework.amqp.rabbit.logback.AmqpAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>false</includeContext>
+            <customFields>{"component": "${appName}"}</customFields>
+        </encoder>
+
+        <addresses>${rabbitAddresses}</addresses>
+        <username>${rabbitUsername}</username>
+        <password>${rabbitPassword}</password>
+        <exchangeName>${rabbitExchange}</exchangeName>
+        <routingKeyPattern>${rabbitRoutingKey}</routingKeyPattern>
+        <charset>UTF-8</charset>
+    </appender>
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
+        <sleepMillis>3000</sleepMillis>
+    </shutdownHook>
+
+    <!-- LOG everything at INFO level -->
+    <root level="${logback.root.log.level:-INFO}">
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- LOG "br.com.santander*" at DEBUG level -->
+    <logger name="com.santander" level="${logback.log.level:-INFO}" additivity="false">
+        <appender-ref ref="RabbitMQ" />
+        <appender-ref ref="Console" />
+    </logger>
+
+</configuration>
