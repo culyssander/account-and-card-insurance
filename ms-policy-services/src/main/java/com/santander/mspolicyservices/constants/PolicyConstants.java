@@ -6,5 +6,5 @@ public final class PolicyConstants {
 
     public static final String POLICY_NOT_FOUND = "policy.not_found";
     public static final String POLICY_ACCESS_DENIED = "policy.access_denied";
-
+    public final static String ARGUMENT_INVALID = "argument.invalid";
 }
