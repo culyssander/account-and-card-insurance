@@ -9,6 +9,7 @@ import com.santander.mspolicyservices.clients.ProductsServicesClients;
 import com.santander.mspolicyservices.clients.UserServicesClients;
 import com.santander.mspolicyservices.dto.ProductResponseDto;
 import com.santander.mspolicyservices.dto.UserResponseDto;
+import com.santander.mspolicyservices.exception.BusinessException;
 import com.santander.mspolicyservices.exception.NotFoundException;
 import com.santander.mspolicyservices.model.Policy;
 import com.santander.mspolicyservices.model.PolicyStatus;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,9 +36,9 @@ public class PolicyServices {
     private MessageSource messageSource;
     private JwtUtil jwtUtil;
 
-    public PolicyResponseDto createPolicy(PolicyRequestDto policyRequest, HttpServletRequest request, Locale locale) {
+    public PolicyResponseDto createPolicy(PolicyRequestDto policyRequest, Locale locale) {
         String productCode = policyRequest.getProductCode();
-        UserResponseDto userLogado = getUserLogged(request, locale);
+        UserResponseDto userLogado = getUserLogged(locale);
         ProductResponseDto response = getProductsByCode(productCode, locale);
         String protocol = protocolSequencialClients.generateProtocol(productCode);
 
@@ -56,36 +58,29 @@ public class PolicyServices {
     }
 
     private ProductResponseDto getProductsByCode(String code, Locale locale) {
-        ProductResponseDto products = productsServicesClients.findProductsByCode(code);
+        try {
+            ProductResponseDto products = productsServicesClients.findProductsByCode(code);
 
-        if (products == null) {
-            throw new NotFoundException(messageSource.getMessage(PolicyConstants.POLICY_NOT_FOUND, new Object[] {}, locale));
+            if (products == null) {
+                throw new NotFoundException(messageSource.getMessage(PolicyConstants.POLICY_NOT_FOUND, new Object[] {}, locale));
+            }
+
+            return products;
+        } catch (BusinessException e) {
+            throw new BusinessException(e.getMessage());
         }
-
-        return products;
     }
 
-    private Optional<String> getToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-
-        if (header != null && header.startsWith("Bearer ")) {
-            return Optional.of(header.substring(7));
-        }
-
-        return Optional.empty();
-    }
-
-    private UserResponseDto getUserLogged(HttpServletRequest request, Locale locale) {
-        Optional<String> token = getToken(request);
-
-        if (token.isPresent()) {
-            String username = jwtUtil.extractUsername(token.get());
-            UserResponseDto user = userServicesClients.findByEmail(username);
-            validateRole(user.getRole(), locale);
+    private UserResponseDto getUserLogged(Locale locale) {
+        try {
+            UserResponseDto user = userServicesClients.findByUserLogged();
+            if (Objects.nonNull(user)) {
+                validateRole(user.getRole(), locale);
+            }
             return user;
+        } catch (AccessDeniedException e) {
+            throw new AccessDeniedException(messageSource.getMessage(PolicyConstants.POLICY_ACCESS_DENIED, new Object[] {}, locale));
         }
-
-        throw new AccessDeniedException(messageSource.getMessage(PolicyConstants.POLICY_ACCESS_DENIED, new Object[] {}, locale));
     }
 
     private void validateRole(String role, Locale locale) {
@@ -100,7 +95,7 @@ public class PolicyServices {
 
     public Policy findByCPFAndPolicyNumber(String cpf, String policyNumber, Locale locale) {
         return policyRepository.findByCpfAndPolicyNumber(cpf, policyNumber)
-                .orElseThrow(() -> new NotFoundException(messageSource.getMessage(PolicyConstants.POLICY_NOT_FOUND, new Object[] {}, locale)));
+                .orElseThrow(() -> new NotFoundException(messageSource.getMessage(PolicyConstants.POLICY_NOT_FOUND, new Object[] {policyNumber}, locale)));
     }
 
     public PolicyResponseDto findByAdminOrAnalysis(String policyNumber, Locale locale) {
@@ -110,7 +105,7 @@ public class PolicyServices {
     }
 
     public PolicyResponseDto findByInsured(String policyNumber,HttpServletRequest request, Locale locale) {
-        UserResponseDto userLogged = getUserLogged(request, locale);
+        UserResponseDto userLogged = getUserLogged(locale);
         validateRole(userLogged.getRole(), locale);
         Policy policy = findByCPFAndPolicyNumber(userLogged.getCpf(), policyNumber, locale);
 
