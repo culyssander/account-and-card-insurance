@@ -13,4 +13,7 @@ public interface UserServicesClients {
 
     @GetMapping(path = "/insureds/cpf/{cpf}")
     UserResponseDto findByCpf(@PathVariable String cpf);
+
+    @GetMapping(path = "/users/user-logged")
+    UserResponseDto findByUserLogged();
 }
