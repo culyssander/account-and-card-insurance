@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface ProtocolSequencialRepository extends JpaRepository<ProtocolSequencial, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT p FROM ProtocolSequencial p WHERE p.productCode = :departamento AND p.year = :ano")
+    @Query("SELECT p FROM ProtocolSequencial p WHERE p.productCode = :productCode AND p.year = :year")
     Optional<ProtocolSequencial> findProtocolByProductCodeAndYear(
-            @Param("productCode") String departamento,
-            @Param("year") Integer ano);
+            @Param("productCode") String productCode,
+            @Param("year") Integer year);
 }
