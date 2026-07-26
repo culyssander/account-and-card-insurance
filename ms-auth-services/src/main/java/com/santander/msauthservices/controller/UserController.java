@@ -37,4 +37,10 @@ public class UserController {
     public UserResponseDto findUserByEmail(@PathVariable String email, Locale locale) {
         return userServices.findByEmailDto(email, locale);
     }
+
+    @PreAuthorize("hasRole('INSURED')")
+    @GetMapping("/user-logged")
+    public UserResponseDto findUserByEmailLogged(Locale locale) {
+        return userServices.findByEmailDto(userServices.userLogged(locale), locale);
+    }
 }
