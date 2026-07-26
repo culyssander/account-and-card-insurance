@@ -6,7 +6,7 @@ CREATE TABLE claim (
                               CHECK (status IN (
                                                 'OPEN',
                                                 'DOCUMENTATION_PENDING',
-                                                'UNDER_REVIEW',
+                                                'IN_REVIEW',
                                                 'APPROVED',
                                                 'DENIED'
                                   )),
