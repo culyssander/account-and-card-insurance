@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +25,11 @@ public class Policy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "policy_id_seq")
+    @SequenceGenerator(
+            name = "policy_id_seq",
+            sequenceName = "policy_id_seq",
+            allocationSize = 1
+    )
     private BigInteger id;
 
     @Column(name = "policy_number")
