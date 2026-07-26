@@ -1,0 +1,54 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: ms-policy-services
+              uri: lb://MS-POLICY-SERVICES
+              predicates:
+                - Path=/api/v1/policies/**
+              filters:
+                - StripPrefix=1
+
+            - id: ms-auth-services
+              uri: lb://MS-AUTH-SERVICES
+              predicates:
+                - Path=/api/v1/**
+              filters:
+                - StripPrefix=1
+
+            - id: ms-protocol-services
+              uri: lb://MS-PROTOCOL-SERVICES
+              predicates:
+                - Path=/api/v1/protocols/**
+              filters:
+                - StripPrefix=1
+
+            - id: ms-claim-services
+              uri: lb://MS-CLAIM-SERVICES
+              predicates:
+                - Path=/api/v1/claims/**
+              filters:
+                - StripPrefix=1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.loadbalancer: DEBUG
+    com.netflix.discovery: DEBUG
