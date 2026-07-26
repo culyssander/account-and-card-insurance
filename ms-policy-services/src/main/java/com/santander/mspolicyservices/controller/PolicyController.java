@@ -26,17 +26,17 @@ public class PolicyController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public PolicyResponseDto createPolicy(@Validated @RequestBody PolicyRequestDto policyRequest, HttpServletRequest request, Locale locale) {
-        return policyServices.createPolicy(policyRequest, request, locale);
+    public PolicyResponseDto createPolicy(@Validated @RequestBody PolicyRequestDto policyRequest, Locale locale) {
+        return policyServices.createPolicy(policyRequest, locale);
     }
 
-    @GetMapping("/product-number/{productNumber}")
-    public PolicyResponseDto findByProductNumber(@PathVariable String productNumber, Locale locale) {
-        return policyServices.findByAdminOrAnalysis(productNumber, locale);
+    @GetMapping("/policy-number/{policyNumber}")
+    public PolicyResponseDto findByProductNumber(@PathVariable String policyNumber, Locale locale) {
+        return policyServices.findByAdminOrAnalysis(policyNumber, locale);
     }
 
-    @GetMapping("insured/product-number/{productNumber}")
-    public PolicyResponseDto findByCPFAndProductNumber(@PathVariable String productNumber, Locale locale) {
-        return policyServices.findByAdminOrAnalysis(productNumber, locale);
+    @GetMapping("insured/policy-number/{policyNumber}")
+    public PolicyResponseDto findByCPFAndProductNumber(@PathVariable String policyNumber, HttpServletRequest request, Locale locale) {
+        return policyServices.findByInsured(policyNumber, request, locale);
     }
 }
