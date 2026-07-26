@@ -25,6 +25,19 @@ services:
     volumes:
       - postgres_policy_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
 
+  claimDB:
+    image: postgres:16-alpine
+    container_name: claim-db  # Alterado para ser único
+    restart: always
+    environment:
+      POSTGRES_USER: claimDB
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: claimDB
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_claim_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
+
   rabbitmq:
     image: rabbitmq:4-management
     container_name: rabbitmq
@@ -53,4 +66,5 @@ services:
 volumes:
   postgres_user_data:    # Separado
   postgres_policy_data:  # Separado
+  postgres_claim_data:  # Separado
   rabbitmq_data:
