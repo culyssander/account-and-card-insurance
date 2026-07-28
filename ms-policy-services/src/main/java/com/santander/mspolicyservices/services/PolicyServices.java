@@ -34,7 +34,6 @@ public class PolicyServices {
     private ProtocolSequencialClients protocolSequencialClients;
     private UserServicesClients userServicesClients;
     private MessageSource messageSource;
-    private JwtUtil jwtUtil;
 
     public PolicyResponseDto createPolicy(PolicyRequestDto policyRequest, Locale locale) {
         String productCode = policyRequest.getProductCode();
@@ -104,7 +103,8 @@ public class PolicyServices {
         return mapClientes(policy);
     }
 
-    public PolicyResponseDto findByInsured(String policyNumber,HttpServletRequest request, Locale locale) {
+    public PolicyResponseDto findByInsured(String policyNumber, Locale locale) {
+
         UserResponseDto userLogged = getUserLogged(locale);
         validateRole(userLogged.getRole(), locale);
         Policy policy = findByCPFAndPolicyNumber(userLogged.getCpf(), policyNumber, locale);
@@ -113,7 +113,7 @@ public class PolicyServices {
     }
 
     private PolicyResponseDto mapClientes(Policy policy) {
-        UserResponseDto userResponseDto = userServicesClients.findByCpf(policy.getCpf());
+        UserResponseDto userResponseDto = userServicesClients.findByInsuredLogged();
         ProductResponseDto productResponseDto = productsServicesClients.findProductsByCode(policy.getProductCode());
 
         return entityToDto(policy, productResponseDto, userResponseDto);

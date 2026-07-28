@@ -3,7 +3,6 @@ package com.santander.mspolicyservices.controller;
 import com.santander.mspolicyservices.dto.PolicyRequestDto;
 import com.santander.mspolicyservices.dto.PolicyResponseDto;
 import com.santander.mspolicyservices.services.PolicyServices;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/policies")
+@RequestMapping("/v1/policies")
 @AllArgsConstructor
 public class PolicyController {
 
@@ -36,7 +35,7 @@ public class PolicyController {
     }
 
     @GetMapping("insured/policy-number/{policyNumber}")
-    public PolicyResponseDto findByCPFAndProductNumber(@PathVariable String policyNumber, HttpServletRequest request, Locale locale) {
-        return policyServices.findByInsured(policyNumber, request, locale);
+    public PolicyResponseDto findByCPFAndProductNumber(@PathVariable String policyNumber, Locale locale) {
+        return policyServices.findByInsured(policyNumber, locale);
     }
 }
