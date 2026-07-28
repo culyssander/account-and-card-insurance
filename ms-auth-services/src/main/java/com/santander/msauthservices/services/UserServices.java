@@ -4,6 +4,7 @@ import com.santander.msauthservices.constants.UserConstants;
 import com.santander.msauthservices.dto.UserRequestDto;
 import com.santander.msauthservices.dto.UserResponseDto;
 import com.santander.msauthservices.exception.AlreadyExistsException;
+import com.santander.msauthservices.exception.BadRequestException;
 import com.santander.msauthservices.exception.BusinessException;
 import com.santander.msauthservices.exception.NotFoundException;
 import com.santander.msauthservices.model.Insured;
@@ -78,6 +79,9 @@ public class UserServices implements UserDetailsService {
     }
 
     private BigInteger createNewInsured(UserRequestDto userRequestDto, Locale locale) {
+        if (Objects.isNull(userRequestDto.getCpf())) {
+            throw new BadRequestException("EMPTY CPF");
+        }
         return insuredServices.newInsured(userRequestDto, locale).getId();
     }
 
