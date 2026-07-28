@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/ms-protocol-services/pom.xml" />
         <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/ms-claims-services/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-claims-questionnaire-services/pom.xml" />
       </list>
     </option>
   </component>

@@ -29,6 +29,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
         <module name="api-gateway" />
+        <module name="ms-claims-questionnaire-services" />
         <module name="ms-claims-services" />
       </profile>
     </annotationProcessing>
@@ -38,6 +39,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="eureka-service" options="-parameters" />
       <module name="ms-auth-services" options="-parameters" />
+      <module name="ms-claims-questionnaire-services" options="-parameters" />
       <module name="ms-claims-services" options="-parameters" />
       <module name="ms-policy-services" options="-parameters" />
       <module name="ms-protocol-services" options="-parameters" />
