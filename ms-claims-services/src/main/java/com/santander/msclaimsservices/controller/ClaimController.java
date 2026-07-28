@@ -4,6 +4,8 @@ import com.santander.msclaimsservices.dto.ClaimResponseDto;
 import com.santander.msclaimsservices.services.ClaimServices;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,5 +28,10 @@ public class ClaimController {
     public ClaimResponseDto newClaim (@RequestParam(value = "files", required = false) List<MultipartFile> files,
                                       @RequestParam(name = "claim") String claim, Locale locale) {
         return claimServices.newClaimDto(files, claim, locale);
+    }
+
+    @GetMapping("/{claimId}")
+    public ClaimResponseDto findByClaimId(@PathVariable String claimId, Locale locale) {
+        return claimServices.findByClaimNumberDto(claimId, locale);
     }
 }
