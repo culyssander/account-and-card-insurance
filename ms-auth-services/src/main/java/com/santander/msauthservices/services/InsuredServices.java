@@ -45,6 +45,11 @@ public class InsuredServices {
                 .orElseThrow(() -> new NotFoundException(messageSource.getMessage(UserConstants.USER_NOT_FOUND, new Object[] {cpf}, locale)));
     }
 
+    public Insured findByInsureLogged(String email, Locale locale) {
+        return insuredRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(messageSource.getMessage(UserConstants.USER_NOT_FOUND, new Object[] {email}, locale)));
+    }
+
     private void validateUserByCPF(String cpf, Locale locale) {
         if (insuredRepository.existsByCpf(cpf))
             throw new AlreadyExistsException(
