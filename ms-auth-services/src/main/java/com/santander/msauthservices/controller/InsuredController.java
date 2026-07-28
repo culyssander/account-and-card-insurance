@@ -2,6 +2,7 @@ package com.santander.msauthservices.controller;
 
 import com.santander.msauthservices.model.Insured;
 import com.santander.msauthservices.services.InsuredServices;
+import com.santander.msauthservices.services.UserServices;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/insureds")
+@RequestMapping("/v1/insureds")
 @AllArgsConstructor
 //@Tag(name = "Insured", description = "Endpoints for managing Insureds")
 public class InsuredController {
 
     private InsuredServices insuredServices;
+    private UserServices userServices;
 
     @PreAuthorize("hasAnyRole('ANALISTA', 'ADMIN')")
     @GetMapping("/cpf/{cpf}")
@@ -26,9 +28,10 @@ public class InsuredController {
     }
 
     @PreAuthorize("hasRole('INSURED')")
-    @GetMapping("/cpf-logged")
+    @GetMapping("/logged")
     public Insured findUserByCPF(Locale locale) {
-        return insuredServices.findByCPFLogged(locale);
+        String email = userServices.userLogged(locale);
+        return insuredServices.findByInsureLogged(email, locale);
     }
 
 }
