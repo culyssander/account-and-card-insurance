@@ -11,4 +11,6 @@ public interface InsuredRepository extends JpaRepository<Insured, BigInteger> {
     boolean existsByCpf(String cpf);
 
     Optional<Insured> findByCpf(String cpf);
+
+    Optional<Insured> findByEmail(String email);
 }
