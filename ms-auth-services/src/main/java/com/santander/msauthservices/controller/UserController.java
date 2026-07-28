@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 @AllArgsConstructor
 //@Tag(name = "User", description = "Endpoints for managing users")
 public class UserController {
