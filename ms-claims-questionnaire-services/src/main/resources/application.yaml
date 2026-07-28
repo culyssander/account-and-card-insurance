@@ -1,3 +1,21 @@
 spring:
   application:
     name: ms-claims-questionnaire-services
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5434/claimDB}
+    username: ${DB_USER:claimDB}
+    password: ${DB_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop   # schema vem do Flyway, não do Hibernate
+    open-in-view: false    # evita lazy-loading acidental fora do @Transactional
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8086
+
+claim:
+  services:
+    url: http://localhost:8095/api/v1/claims
