@@ -24,4 +24,11 @@ public class InsuredController {
     public Insured findUserByEmail(@PathVariable String cpf, Locale locale) {
         return insuredServices.findByCPF(cpf, locale);
     }
+
+    @PreAuthorize("hasRole('INSURED')")
+    @GetMapping("/cpf-logged")
+    public Insured findUserByCPF(Locale locale) {
+        return insuredServices.findByCPFLogged(locale);
+    }
+
 }
