@@ -1,6 +1,6 @@
 # Account & Card Insurance — Microservices
 
-**Santander's Account and Card Insurance** protects a customer's bank account and cards against certain types of losses caused by **theft, coercion, and unauthorized use**. This repository implements the platform as a set of Spring Boot microservices, orchestrated with Kubernetes/Docker, communicating synchronously via REST and asynchronously via **RabbitMQ**.
+This is a personal project inspired by **Santander's Account and Card Insurance** product. It simulates an insurance platform for bank accounts and payment cards using a microservices architecture built with Spring Boot. The services are orchestrated with Kubernetes and Docker, communicate synchronously through REST APIs, and asynchronously through **RabbitMQ**.
 
 ## Architecture Overview
 
