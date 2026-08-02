@@ -3,8 +3,10 @@ package com.santander.msclaimsservices.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.santander.msclaimsservices.clients.PolicyServicesClients;
 import com.santander.msclaimsservices.clients.ProtocolSequencialClients;
+import com.santander.msclaimsservices.clients.UserServicesClients;
 import com.santander.msclaimsservices.constants.ClaimConstants;
 import com.santander.msclaimsservices.dto.ClaimRequestDto;
+import com.santander.msclaimsservices.dto.ClaimRequestStatusDto;
 import com.santander.msclaimsservices.dto.ClaimResponseDto;
 import com.santander.msclaimsservices.dto.PolicyResponseDto;
 import com.santander.msclaimsservices.exception.BadRequestException;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -46,23 +49,22 @@ public class ClaimServices {
     private RabbitTemplate rabbitTemplate;
     private ClaimRepository claimRepository;
     private AttachmentServices attachmentServices;
+    private UserServicesClients userServicesClients;
     private PolicyServicesClients policyServicesClients;
     private ProtocolSequencialClients protocolSequencialClients;
 
+    @Transactional
     public ClaimResponseDto newClaimDto(List<MultipartFile> files, String reclamacao, Locale locale) {
-        ClaimResponseDto claim = null;
-        List<Attachment> attachments = null;
         try {
             validateFiles(files);
             ClaimRequestDto requestDto = inputToDTO(reclamacao, ClaimRequestDto.class);
-            claim = newClaim(requestDto, locale);
-            attachments = newAttachment(files, claim.getClaimNumber(), claim.getId());
+            ClaimResponseDto claim = newClaim(requestDto, locale);
+            List<Attachment> attachments = newAttachment(files, claim.getClaimNumber(), claim.getId());
             publishInRabbit(claim, locale);
             return claim;
         } catch (BusinessException e) {
             String message = messageSource.getMessage(ClaimConstants.CLAIM_ERROR_SAVE_ROLLBACK, new Object[] {e.getMessage()}, locale);
             log.error(message);
-            rollback(claim, attachments);
             throw new BusinessException(message);
         }
     }
@@ -139,11 +141,8 @@ public class ClaimServices {
         try {
             rabbitTemplate.convertAndSend(ClaimConstants.RABBIT_QUEUE_CLAIM_EXCHANGE,
                     ClaimConstants.RABBIT_QUEUE_CLAIM_ROUTER, claim);
-            rabbitTemplate.convertAndSend(ClaimConstants.RABBIT_QUEUE_NOTIFICATION_EXCHANGE,
-                    ClaimConstants.RABBIT_QUEUE_NOTIFICATION_ROUTER, claim);
         } catch (BusinessException e) {
-            log.error("rollback {} ", e.getMessage());
-            claimRepository.deleteById(claim.getId()); // rollback
+            log.error("Error {} ", e.getMessage());
             throw new BusinessException(messageSource.getMessage(ClaimConstants.CLAIM_ERROR_SAVE, new Object[] {e.getMessage()}, locale));
         }
     }
@@ -163,16 +162,6 @@ public class ClaimServices {
             return dto;
         } catch (IOException e) {
             throw new BadRequestException("Input invalido: " + e.getMessage());
-        }
-    }
-
-    private void rollback(ClaimResponseDto claim, List<Attachment> attachments) {
-        if (Objects.nonNull(claim)) {
-            claimRepository.deleteById(claim.getId());
-        }
-
-        if (Objects.nonNull(attachments)) {
-            attachments.forEach(attachmentServices::deleteAttachment);
         }
     }
 
@@ -223,6 +212,33 @@ public class ClaimServices {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
             return LocalDateTime.parse(dateTime, formatter);
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ClaimResponseDto updateStatus(String claimId, ClaimRequestStatusDto status, Locale locale) {
+        try {
+            Claim claim = findByClaimNumber(claimId, locale);
+            userServicesClients.findByUserLogged();
+
+            claim.setStatus(getClaimStatus(status.getStatus()).name());
+            claim.setUpdatedAt(LocalDateTime.now());
+            claim = claimRepository.save(claim);
+
+            ClaimResponseDto claimResponseDto = entityToDto(claim, null);
+
+            publishInRabbit(claimResponseDto, locale);
+            return claimResponseDto;
+        } catch (BusinessException e) {
+            throw new BadRequestException("Error to update status: " + e.getMessage());
+        }
+    }
+
+    private ClaimStatus getClaimStatus(String status) {
+        try {
+            return ClaimStatus.valueOf(status);
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
         }
