@@ -26,4 +26,5 @@ public class ClaimResponseDto {
     private BigDecimal claimedAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private AnswerResponse answerResponse;
 }
