@@ -22,11 +22,7 @@ public final class ClaimConstants {
     public static final String RABBIT_QUEUE_LOGGING_ROUTER    = "LOGGING.MESSAGE.KEY";
     public static final String RABBIT_QUEUE_LOGGING           = "LOGGING.MESSAGE";
 
-    public static final String RABBIT_QUEUE_CLAIM_EXCHANGE  = "CLAIM.CREATED.EXCHANGE";
-    public static final String RABBIT_QUEUE_CLAIM_ROUTER    = "CLAIM.CREATED.KEY";
-    public static final String RABBIT_QUEUE_CLAIM           = "CLAIM.CREATED";
-
-    public static final String RABBIT_QUEUE_NOTIFICATION_EXCHANGE  = "NOTIFICATION.REQUEST.EXCHANGE";
-    public static final String RABBIT_QUEUE_NOTIFICATION_ROUTER    = "NOTIFICATION.REQUEST.KEY";
-    public static final String RABBIT_QUEUE_NOTIFICATION           = "NOTIFICATION.REQUEST";
+    public static final String RABBIT_QUEUE_CLAIM_EXCHANGE  = "CLAIM.STATUS.EXCHANGE";
+    public static final String RABBIT_QUEUE_CLAIM_ROUTER    = "CLAIM.STATUS.KEY";
+    public static final String RABBIT_QUEUE_CLAIM           = "CLAIM.STATUS";
 }
