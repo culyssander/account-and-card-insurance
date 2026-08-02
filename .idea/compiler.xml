@@ -17,20 +17,22 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
+        <module name="api-gateway" />
         <module name="ms-policy-services" />
+        <module name="ms-claims-services" />
         <module name="ms-auth-services" />
         <module name="ms-protocol-services" />
       </profile>
-      <profile name="Annotation profile for api-gateway" enabled="true">
+      <profile name="Annotation profile for ms-notification-services" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
-        <module name="api-gateway" />
+        <module name="ms-notification-services" />
         <module name="ms-claims-questionnaire-services" />
-        <module name="ms-claims-services" />
+        <module name="ms-analysis-services" />
       </profile>
     </annotationProcessing>
   </component>
@@ -38,9 +40,11 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="eureka-service" options="-parameters" />
+      <module name="ms-analysis-services" options="-parameters" />
       <module name="ms-auth-services" options="-parameters" />
       <module name="ms-claims-questionnaire-services" options="-parameters" />
       <module name="ms-claims-services" options="-parameters" />
+      <module name="ms-notification-services" options="-parameters" />
       <module name="ms-policy-services" options="-parameters" />
       <module name="ms-protocol-services" options="-parameters" />
     </option>
