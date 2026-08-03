@@ -1,4 +1,4 @@
-package com.santander.msclaimsquestionnaireservices.controller;
+package com.santander.msclaimsquestionnaireservices.controller.exception;
 
 import com.santander.msclaimsquestionnaireservices.exception.BusinessException;
 import com.santander.msclaimsquestionnaireservices.exception.InvalidOptionException;
