@@ -73,6 +73,7 @@ public class QuestionnaireService {
 
         AnsweredQuestion answeredQuestion = AnsweredQuestion.builder()
                 .questionnaireId(session.getId())
+                .claimId(claimId)
                 .session(session)
                 .questionId(questionId)
                 .answer(request.selectedOption())
