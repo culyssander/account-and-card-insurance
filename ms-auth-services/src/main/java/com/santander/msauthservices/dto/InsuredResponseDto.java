@@ -1,14 +1,19 @@
 package com.santander.msauthservices.dto;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 public class InsuredResponseDto {
-    private BigInteger id;
+    private Long id;
     private String name;
     private String cpf;
     private String email;
