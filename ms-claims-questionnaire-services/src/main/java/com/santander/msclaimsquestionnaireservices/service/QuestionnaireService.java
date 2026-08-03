@@ -1,6 +1,7 @@
 package com.santander.msclaimsquestionnaireservices.service;
 
 import com.santander.msclaimsquestionnaireservices.clients.ClaimServicesClients;
+import com.santander.msclaimsquestionnaireservices.constants.QuestionnaireConstants;
 import com.santander.msclaimsquestionnaireservices.dto.AnswerRequest;
 import com.santander.msclaimsquestionnaireservices.dto.AnswerResponse;
 import com.santander.msclaimsquestionnaireservices.dto.AnsweredQuestionDto;
@@ -19,7 +20,10 @@ import com.santander.msclaimsquestionnaireservices.model.QuestionnaireSession;
 import com.santander.msclaimsquestionnaireservices.repository.AnsweredQuestionRepository;
 import com.santander.msclaimsquestionnaireservices.repository.QuestionnaireSessionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,12 +32,14 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class QuestionnaireService {
 
     private final QuestionFlow flow;
     private final QuestionnaireSessionRepository sessionStore;
     private final AnsweredQuestionRepository answeredQuestionRepository;
     private final ClaimServicesClients servicesClients;
+    private final RabbitTemplate rabbitTemplate;
 
     public QuestionResponse start(String claimId) {
         validateClaimId(claimId);
@@ -51,8 +57,8 @@ public class QuestionnaireService {
         return toResponse(firstQuestion);
     }
 
-    public AnswerResponse answer(AnswerRequest request) {
-        String claimId = request.claimId();
+    @Transactional
+    public AnswerResponse answer(String claimId, AnswerRequest request) {
         String questionId = request.questionId();
 
         QuestionnaireSession session = sessionStore.findByClaimIdAndCurrentQuestionId(claimId, questionId)
@@ -76,10 +82,11 @@ public class QuestionnaireService {
 
         if (selected.isTerminal()) {
             answeredQuestionRepository.save(answeredQuestion);
-            List<AnsweredQuestionDto> allByClaimId = answeredQuestionRepository.findAllBySessionClaimId(claimId)
-                    .stream().map(this::toResponseAnswer).toList();
-            return AnswerResponse.ofResult(
+            List<AnsweredQuestionDto> allByClaimId = findAllAnsweredQuestionByClaimId(claimId);
+            AnswerResponse answerResponse = AnswerResponse.ofResult(
                     new QuestionnaireResult(claimId, selected.outcomeCode(), allByClaimId));
+            publishInRabbit(answerResponse);
+            return answerResponse;
         }
 
         answeredQuestion.setNextQuestionId(selected.nextQuestionId());
@@ -113,6 +120,27 @@ public class QuestionnaireService {
 
         if (Objects.isNull(claimResponseDto)) {
             throw new QuestionNotFoundException("Claim not found");
+        }
+    }
+
+    private List<AnsweredQuestionDto>  findAllAnsweredQuestionByClaimId(String claimId) {
+        return answeredQuestionRepository.findAllBySessionClaimId(claimId)
+                .stream().map(this::toResponseAnswer).toList();
+    }
+
+    public ClaimResponseDto findQuestionnaireByClaimIdDto(String claimId) {
+        ClaimResponseDto claimResponseDto = findByClaimId(claimId);
+        List<AnsweredQuestionDto> allAnsweredQuestionByClaimId = findAllAnsweredQuestionByClaimId(claimId);
+        return null;
+    }
+
+    private void publishInRabbit(AnswerResponse answerResponse) {
+        try {
+            rabbitTemplate.convertAndSend(QuestionnaireConstants.RABBIT_QUEUE_QUESTIONNAIRE_COMPLETE,
+                    QuestionnaireConstants.RABBIT_QUEUE_QUESTIONNAIRE_COMPLETE_ROUTER, answerResponse);
+        } catch (BusinessException e) {
+            log.error("Error {} ", e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 }
