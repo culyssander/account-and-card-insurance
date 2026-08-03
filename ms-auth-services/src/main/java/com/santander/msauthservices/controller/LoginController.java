@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/login")
+@RequestMapping("/v1/login")
 @AllArgsConstructor
 @Slf4j
 public class LoginController {
