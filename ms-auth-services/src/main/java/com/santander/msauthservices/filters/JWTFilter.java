@@ -60,6 +60,7 @@ public class JWTFilter extends OncePerRequestFilter {
         return uri.startsWith("/swagger-ui")
                 || uri.startsWith("/api-docs")
                 || uri.startsWith("/v3/api-docs")
+                || uri.startsWith("/v1/login")
                 || uri.equals("/swagger-ui.html");
     }
 }
