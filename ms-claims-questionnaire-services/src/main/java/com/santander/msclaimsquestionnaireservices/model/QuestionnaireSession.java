@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class QuestionnaireSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionnaire_session_id_seq")
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "claim_id")
     private String claimId;
