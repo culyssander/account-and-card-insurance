@@ -21,7 +21,7 @@
         <module name="ms-claims-questionnaire-services" />
         <module name="api-gateway" />
       </profile>
-      <profile name="Annotation profile for ms-analysis-services" enabled="true">
+      <profile name="Annotation profile for ms-auth-services" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
