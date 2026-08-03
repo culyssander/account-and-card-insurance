@@ -88,7 +88,9 @@ public class QuestionnaireService {
             return answerResponse;
         }
 
+        session.setCurrentQuestionId(selected.nextQuestionId());
         answeredQuestion.setNextQuestionId(selected.nextQuestionId());
+        answeredQuestionRepository.save(answeredQuestion);
         sessionStore.save(session);
 
         QuestionNode nextQuestion = flow.nodeById(selected.nextQuestionId());
