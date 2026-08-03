@@ -14,6 +14,7 @@ import com.santander.msauthservices.repository.UserRepository;
 import com.santander.msauthservices.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServices implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -41,7 +43,7 @@ public class UserServices implements UserDetailsService {
 
     public UserResponseDto newUser(UserRequestDto request, Locale locale) {
         validateUserByEmail(request.getEmail(), locale);
-        BigInteger insureId = null;
+        Long insureId = null;
 
         if (request.getRole().equals(Role.INSURED)) {
             insureId = createNewInsured(request, locale);
@@ -59,12 +61,16 @@ public class UserServices implements UserDetailsService {
 
         user = userRepository.save(user);
 
-        return  entityToDto(user);
+        UserResponseDto dto = entityToDto(user);
+        log.info("CREATE NEW User: {} ", dto);
+        return dto;
     }
 
     public UserResponseDto findByEmailDto(String email, Locale locale) {
         User byEmail = findByEmail(email, locale);
-        return entityToDto(byEmail);
+        UserResponseDto dto = entityToDto(byEmail);
+        log.info("find user {}", dto);
+        return dto;
     }
 
     public User findByEmail(String email, Locale locale) {
@@ -78,7 +84,7 @@ public class UserServices implements UserDetailsService {
                     messageSource.getMessage(UserConstants.USER_ALREADY_EXISTS, new Object[] { email }, locale));
     }
 
-    private BigInteger createNewInsured(UserRequestDto userRequestDto, Locale locale) {
+    private Long createNewInsured(UserRequestDto userRequestDto, Locale locale) {
         if (Objects.isNull(userRequestDto.getCpf())) {
             throw new BadRequestException("EMPTY CPF");
         }
@@ -89,7 +95,7 @@ public class UserServices implements UserDetailsService {
         return modelMapper.map(user, UserResponseDto.class);
     }
 
-    private Insured getInsured(BigInteger insuredId) {
+    private Insured getInsured(Long insuredId) {
         if (insuredId != null)
             return Insured.builder().id(insuredId).build();
         return null;
@@ -123,9 +129,6 @@ public class UserServices implements UserDetailsService {
 
     public String userLogged(Locale locale) {
         User user = logged(locale);
-
-        if (!user.getRole().equals(Role.INSURED))
-            throw new BusinessException("Not permission");
 
         return user.getEmail();
     }
