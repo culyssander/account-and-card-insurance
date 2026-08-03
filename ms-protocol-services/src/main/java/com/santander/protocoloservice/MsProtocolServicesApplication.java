@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ProtocolServicesApplication {
+public class MsProtocolServicesApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProtocolServicesApplication.class, args);
+		SpringApplication.run(MsProtocolServicesApplication.class, args);
 	}
 
 }
