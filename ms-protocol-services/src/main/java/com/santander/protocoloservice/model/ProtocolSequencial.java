@@ -22,6 +22,8 @@ public class ProtocolSequencial {
 
     @Column(name = "product_code")
     private String productCode;
+
+    @Column(name = "protocol_year")
     private Integer year;
 
     @Column(name = "last_number")
