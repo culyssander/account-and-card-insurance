@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8080
 
 spring:
   application:
@@ -19,13 +19,30 @@ spring:
                 - Path=/api/v1/policies/**
               filters:
                 - StripPrefix=1
+#                - AuthenticationFilter
 
-            - id: ms-auth-services
+            - id: ms-auth-services-login
               uri: lb://MS-AUTH-SERVICES
               predicates:
-                - Path=/api/v1/**
+                - Path=/api/v1/login
               filters:
                 - StripPrefix=1
+
+            - id: ms-auth-services-users
+              uri: lb://MS-AUTH-SERVICES
+              predicates:
+                - Path=/api/v1/users/**
+              filters:
+                - StripPrefix=1
+#                - AuthenticationFilter
+
+            - id: ms-auth-services-insureds
+              uri: lb://MS-AUTH-SERVICES
+              predicates:
+                - Path=/api/v1/insureds/**
+              filters:
+                - StripPrefix=1
+#                - AuthenticationFilter
 
             - id: ms-protocol-services
               uri: lb://MS-PROTOCOL-SERVICES
@@ -33,13 +50,32 @@ spring:
                 - Path=/api/v1/protocols/**
               filters:
                 - StripPrefix=1
+#                - AuthenticationFilter
 
-            - id: ms-claim-services
-              uri: lb://MS-CLAIM-SERVICES
+            - id: ms-claims-services
+              uri: lb://MS-CLAIMS-SERVICES
               predicates:
                 - Path=/api/v1/claims/**
               filters:
                 - StripPrefix=1
+#                - AuthenticationFilter
+
+            - id: ms-analysis-services
+              uri: lb://MS-ANALYSIS-SERVICES
+              predicates:
+                - Path=/api/v1/analysis/**
+              filters:
+                - StripPrefix=1
+#                - AuthenticationFilter
+
+            - id: ms-claims-questionnaire-services
+              uri: lb://MS-CLAIMS-QUESTIONNAIRE-SERVICES
+              predicates:
+                - Path=/claims/{claimId}/questionnaire/**
+              filters:
+                - StripPrefix=0
+#                - AuthenticationFilter
+
 eureka:
   client:
     service-url:
