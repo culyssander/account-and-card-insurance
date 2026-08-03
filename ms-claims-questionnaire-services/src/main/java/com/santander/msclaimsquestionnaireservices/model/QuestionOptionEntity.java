@@ -33,8 +33,6 @@ public class QuestionOptionEntity {
     @Column(nullable = false, length = 255)
     private String label;
 
-    // Guarda o code, não o id — evita join extra só pra montar a árvore
-    // em memória; a resolução do próximo nó é feita pelo repository.
     @Column(name = "next_question_code", length = 10)
     private String nextQuestionCode;
 
@@ -44,9 +42,6 @@ public class QuestionOptionEntity {
     @Column(name = "display_order", nullable = false)
     private int displayOrder;
 
-    protected QuestionOptionEntity() {
-        // JPA
-    }
 
     public QuestionOptionEntity(QuestionEntity question, String optionCode, String label,
                                  String nextQuestionCode, String outcomeCode, int displayOrder) {
@@ -58,19 +53,4 @@ public class QuestionOptionEntity {
         this.displayOrder = displayOrder;
     }
 
-    public String getOptionCode() {
-        return optionCode;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getNextQuestionCode() {
-        return nextQuestionCode;
-    }
-
-    public String getOutcomeCode() {
-        return outcomeCode;
-    }
 }
