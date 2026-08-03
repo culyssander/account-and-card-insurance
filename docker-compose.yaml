@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: auth-db  # Alterado para ser único
+    container_name: auth-db
     restart: always
     environment:
       POSTGRES_USER: userDB
@@ -10,11 +10,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_user_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
+      - postgres_user_data:/var/lib/postgresql/data
 
   policyDB:
     image: postgres:16-alpine
-    container_name: policy-db  # Alterado para ser único
+    container_name: policy-db
     restart: always
     environment:
       POSTGRES_USER: policyDB
@@ -23,11 +23,11 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_policy_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
+      - postgres_policy_data:/var/lib/postgresql/data
 
   claimDB:
     image: postgres:16-alpine
-    container_name: claim-db  # Alterado para ser único
+    container_name: claim-db
     restart: always
     environment:
       POSTGRES_USER: claimDB
@@ -36,7 +36,20 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - postgres_claim_data:/var/lib/postgresql/data  # Volume exclusivo para este DB
+      - postgres_claim_data:/var/lib/postgresql/data
+
+  analysisDB:
+    image: postgres:16-alpine
+    container_name: analysis-db
+    restart: always
+    environment:
+      POSTGRES_USER: analysisDB
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: analysisDB
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_analysis_data:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:4-management
@@ -55,7 +68,7 @@ services:
     image: wiremock/wiremock:3.9.1
     container_name: wiremock-products
     ports:
-      - "8080:8080"
+      - "8888:8080"
     volumes:
       - ./mappings:/home/wiremock/mappings
       - ./__files:/home/wiremock/__files
@@ -63,8 +76,41 @@ services:
       - "--global-response-templating"
       - "--verbose"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - elastic
+
 volumes:
-  postgres_user_data:    # Separado
-  postgres_policy_data:  # Separado
-  postgres_claim_data:  # Separado
+  postgres_user_data:
+  postgres_policy_data:
+  postgres_claim_data:
+  postgres_analysis_data:
+  elasticsearch_data:
   rabbitmq_data:
+
+networks:
+  elastic:
+    driver: bridge
