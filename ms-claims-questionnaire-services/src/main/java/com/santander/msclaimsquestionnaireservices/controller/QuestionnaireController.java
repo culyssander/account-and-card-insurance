@@ -5,7 +5,7 @@ import com.santander.msclaimsquestionnaireservices.dto.AnswerResponse;
 import com.santander.msclaimsquestionnaireservices.dto.ClaimResponseDto;
 import com.santander.msclaimsquestionnaireservices.dto.QuestionResponse;
 import com.santander.msclaimsquestionnaireservices.service.QuestionnaireService;
-import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +29,7 @@ public class QuestionnaireController {
     }
 
     @PostMapping("/answer")
-    public AnswerResponse answer(@Valid @PathVariable String claimId, @RequestBody AnswerRequest request) {
+    public AnswerResponse answer(@PathVariable String claimId, @Validated @RequestBody AnswerRequest request) {
         return questionnaireService.answer(claimId, request);
     }
 
