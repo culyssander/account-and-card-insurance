@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 public class UserResponseDto {
-    private BigInteger id;
+    private Long id;
     private String name;
     private String email;
     private Role role;
