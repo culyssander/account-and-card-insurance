@@ -24,7 +24,7 @@ public class Insured {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "insured_id_seq")
-    private BigInteger id;
+    private Long id;
     private String name;
     private String cpf;
     private String email;
