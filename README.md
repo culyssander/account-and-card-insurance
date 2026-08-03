@@ -4,7 +4,7 @@ This is a personal project inspired by **Santander's Account and Card Insurance*
 
 ## Architecture Overview
 
-![Architecture Diagram](./docs/account-and-card-insurance-v2.png)
+![Architecture Diagram](./docs/account-and-card-insurance-v2.1.1.png)
 
 The system follows a microservices architecture with:
 
