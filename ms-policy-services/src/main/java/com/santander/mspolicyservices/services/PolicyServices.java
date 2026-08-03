@@ -14,19 +14,18 @@ import com.santander.mspolicyservices.exception.NotFoundException;
 import com.santander.mspolicyservices.model.Policy;
 import com.santander.mspolicyservices.model.PolicyStatus;
 import com.santander.mspolicyservices.repository.PolicyRepository;
-import com.santander.mspolicyservices.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PolicyServices {
 
     private PolicyRepository policyRepository;
@@ -53,7 +52,9 @@ public class PolicyServices {
 
         policy = policyRepository.save(policy);
 
-        return entityToDto(policy, response, userLogado);
+        PolicyResponseDto policyResponseDto = entityToDto(policy, response, userLogado);
+        log.info("CREATE POLICY: {} ", policyResponseDto);
+        return policyResponseDto;
     }
 
     private ProductResponseDto getProductsByCode(String code, Locale locale) {
@@ -73,11 +74,13 @@ public class PolicyServices {
     private UserResponseDto getUserLogged(Locale locale) {
         try {
             UserResponseDto user = userServicesClients.findByUserLogged();
+            log.info("GET USER LOGGED: {} ", user);
             if (Objects.nonNull(user)) {
                 validateRole(user.getRole(), locale);
             }
             return user;
         } catch (AccessDeniedException e) {
+            log.error("ERROR IN GET USER LOGGED: {}", e.getMessage());
             throw new AccessDeniedException(messageSource.getMessage(PolicyConstants.POLICY_ACCESS_DENIED, new Object[] {}, locale));
         }
     }
@@ -100,7 +103,9 @@ public class PolicyServices {
     public PolicyResponseDto findByAdminOrAnalysis(String policyNumber, Locale locale) {
         Policy policy = findByPolicyNumber(policyNumber, locale);
 
-        return mapClientes(policy);
+        PolicyResponseDto policyResponseDto = mapClientes(policy);
+        log.error("FIND POLICY ADMIN OR ANALYST: {}", policyResponseDto);
+        return policyResponseDto;
     }
 
     public PolicyResponseDto findByInsured(String policyNumber, Locale locale) {
@@ -109,7 +114,9 @@ public class PolicyServices {
         validateRole(userLogged.getRole(), locale);
         Policy policy = findByCPFAndPolicyNumber(userLogged.getCpf(), policyNumber, locale);
 
-        return mapClientes(policy);
+        PolicyResponseDto policyResponseDto = mapClientes(policy);
+        log.error("FIND POLICY INSURED: {}", policyResponseDto);
+        return policyResponseDto;
     }
 
     private PolicyResponseDto mapClientes(Policy policy) {
