@@ -73,7 +73,6 @@ public class QuestionnaireService {
 
         AnsweredQuestion answeredQuestion = AnsweredQuestion.builder()
                 .questionnaireId(session.getId())
-//                .claimId(claimId)
                 .session(session)
                 .questionId(questionId)
                 .answer(request.selectedOption())
@@ -131,7 +130,8 @@ public class QuestionnaireService {
     public ClaimResponseDto findQuestionnaireByClaimIdDto(String claimId) {
         ClaimResponseDto claimResponseDto = findByClaimId(claimId);
         List<AnsweredQuestionDto> allAnsweredQuestionByClaimId = findAllAnsweredQuestionByClaimId(claimId);
-        return null;
+        claimResponseDto.setAllAnsweredQuestion(allAnsweredQuestionByClaimId);
+        return claimResponseDto;
     }
 
     private void publishInRabbit(AnswerResponse answerResponse) {

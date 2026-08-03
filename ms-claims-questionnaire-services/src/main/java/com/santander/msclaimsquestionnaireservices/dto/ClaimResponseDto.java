@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
@@ -26,5 +27,5 @@ public class ClaimResponseDto {
     private BigDecimal claimedAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private AnswerResponse answerResponse;
+    private List<AnsweredQuestionDto> allAnsweredQuestion;
 }
