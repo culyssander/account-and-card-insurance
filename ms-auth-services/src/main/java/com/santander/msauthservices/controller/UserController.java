@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/users")
 @AllArgsConstructor
-//@Tag(name = "User", description = "Endpoints for managing users")
 public class UserController {
 
     private UserServices userServices;
@@ -38,7 +37,6 @@ public class UserController {
         return userServices.findByEmailDto(email, locale);
     }
 
-    @PreAuthorize("hasRole('INSURED')")
     @GetMapping("/user-logged")
     public UserResponseDto findUserByEmailLogged(Locale locale) {
         return userServices.findByEmailDto(userServices.userLogged(locale), locale);
