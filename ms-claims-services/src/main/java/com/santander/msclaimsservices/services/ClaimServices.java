@@ -61,8 +61,10 @@ public class ClaimServices {
             ClaimResponseDto claim = newClaim(requestDto, locale);
             List<Attachment> attachments = newAttachment(files, claim.getClaimNumber(), claim.getId());
             publishInRabbit(claim, locale);
+            log.info("CREATE CLAIM: {}", claim);
             return claim;
         } catch (BusinessException e) {
+            log.error("ERROR TO CREATE CLAIM: {}", e.getMessage());
             String message = messageSource.getMessage(ClaimConstants.CLAIM_ERROR_SAVE_ROLLBACK, new Object[] {e.getMessage()}, locale);
             log.error(message);
             throw new BusinessException(message);
@@ -134,7 +136,11 @@ public class ClaimServices {
 
     public ClaimResponseDto findByClaimNumberDto(String claimNumber, Locale locale) {
         Claim claim = findByClaimNumber(claimNumber, locale);
-        return entityToDto(claim, null);
+        ClaimResponseDto claimResponseDto = entityToDto(claim, null);
+
+        log.info("FIND CLAIM BY claimNumber: {}", claimResponseDto);
+
+        return claimResponseDto;
     }
 
     private void publishInRabbit(ClaimResponseDto claim, Locale locale) {
@@ -218,21 +224,48 @@ public class ClaimServices {
     }
 
     @Transactional
-    public ClaimResponseDto updateStatus(String claimId, ClaimRequestStatusDto status, Locale locale) {
+    public ClaimResponseDto updateStatusDocOrReview(String claimId,
+                                                    ClaimRequestStatusDto status,
+                                                    Locale locale) {
+        return updateStatus(claimId, status, locale, true);
+    }
+
+    @Transactional
+    public ClaimResponseDto updateStatusApprovedOrDenied(String claimId,
+                                                         ClaimRequestStatusDto status,
+                                                         Locale locale) {
+        return updateStatus(claimId, status, locale, false);
+    }
+
+    private ClaimResponseDto updateStatus(String claimId,
+                                          ClaimRequestStatusDto status,
+                                          Locale locale,
+                                          boolean validateStatus) {
         try {
             Claim claim = findByClaimNumber(claimId, locale);
             userServicesClients.findByUserLogged();
 
-            claim.setStatus(getClaimStatus(status.getStatus()).name());
+            ClaimStatus claimStatus = getClaimStatus(status.getStatus());
+
+            if (validateStatus) {
+                validateClaimStatus(claimStatus);
+            }
+
+            claim.setStatus(claimStatus.name());
             claim.setUpdatedAt(LocalDateTime.now());
-            claim = claimRepository.save(claim);
 
-            ClaimResponseDto claimResponseDto = entityToDto(claim, null);
+            Claim savedClaim = claimRepository.save(claim);
+            ClaimResponseDto response = entityToDto(savedClaim, null);
 
-            publishInRabbit(claimResponseDto, locale);
-            return claimResponseDto;
+            publishInRabbit(response, locale);
+            log.info("UPDATE CLAIM STATUS: {}", response);
+
+            return response;
+
         } catch (BusinessException e) {
-            throw new BadRequestException("Error to update status: " + e.getMessage());
+            String message = "Error to update status: " + e.getMessage();
+            log.error(message, e);
+            throw new BadRequestException(message);
         }
     }
 
@@ -241,6 +274,14 @@ public class ClaimServices {
             return ClaimStatus.valueOf(status);
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    private void validateClaimStatus(ClaimStatus status) {
+        if (status != ClaimStatus.DOCUMENTATION_PENDING && status != ClaimStatus.IN_REVIEW) {
+            throw new BadRequestException(
+                    "Invalid Status: Update only DOCUMENTATION_PENDING or IN_REVIEW"
+            );
         }
     }
 }
