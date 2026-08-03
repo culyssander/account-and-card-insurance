@@ -60,6 +60,9 @@ The system follows a microservices architecture with:
 ## The project is still in the development phase.
 ### Eureka Server 
 ![](./docs/Eureka-Server.png)
+
+### Logs in EKS
+![](./docs/kibana.png)
 ### Submitting the questionnaire
 ![](./docs/Start-questionnaire0.png)
 ![](./docs/Start-questionnaire1.png)
