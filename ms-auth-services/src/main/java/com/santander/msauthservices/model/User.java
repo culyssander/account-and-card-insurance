@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "user_")
+@Table(name = "users")
 @Getter
 @Setter
 @Builder
@@ -36,8 +37,8 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    private Long id;
     private String name;
     private String email;
     private String password;
