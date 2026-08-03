@@ -25,16 +25,16 @@ import java.time.LocalDateTime;
 @Table(name = "answered_question")
 public class AnsweredQuestion {
     @Id
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "questionnaire_id")
-    private BigInteger questionnaireId;
+    private Long questionnaireId;
 
-//    @Column(name = "claim_id")
-//    private String claimId;
+    @Column(name = "claim_id")
+    private String claimId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "claim_id")
+    @JoinColumn(name = "questionnaire_id", insertable = false, updatable = false)
     private QuestionnaireSession session;
 
     @Column(name = "question_id")
