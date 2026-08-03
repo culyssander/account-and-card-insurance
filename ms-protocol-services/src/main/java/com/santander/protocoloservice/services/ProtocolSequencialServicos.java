@@ -3,11 +3,13 @@ package com.santander.protocoloservice.services;
 import com.santander.protocoloservice.model.ProtocolSequencial;
 import com.santander.protocoloservice.repository.ProtocolSequencialRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
+@Slf4j
 public class ProtocolSequencialServicos {
 
     private static final int TAMANHO_SEQUENCIAL = 5;
@@ -28,7 +30,9 @@ public class ProtocolSequencialServicos {
         sequencial.setLastNumber(sequencial.getLastNumber() + 1);
         protocoloSequencialRepository.save(sequencial);
 
-        return montarProtocolo(productCode, year, sequencial.getLastNumber());
+        String protocolo = montarProtocolo(productCode, year, sequencial.getLastNumber());
+        log.info("CREATE PROTOCOL: {} ", protocolo);
+        return protocolo;
     }
 
     private ProtocolSequencial newProtocolSequencial(String productCode, int year) {
