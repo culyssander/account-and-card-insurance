@@ -41,10 +41,6 @@ public class QuestionEntity {
     @OrderBy("displayOrder asc")
     private List<QuestionOptionEntity> options = new ArrayList<>();
 
-    protected QuestionEntity() {
-        // JPA
-    }
-
     public QuestionEntity(String code, String text, QuestionType type) {
         this.code = code;
         this.text = text;
