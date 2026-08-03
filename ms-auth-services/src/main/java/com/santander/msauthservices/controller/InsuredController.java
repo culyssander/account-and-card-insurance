@@ -15,7 +15,6 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/v1/insureds")
 @AllArgsConstructor
-//@Tag(name = "Insured", description = "Endpoints for managing Insureds")
 public class InsuredController {
 
     private InsuredServices insuredServices;
@@ -29,7 +28,7 @@ public class InsuredController {
 
     @PreAuthorize("hasRole('INSURED')")
     @GetMapping("/logged")
-    public Insured findUserByCPF(Locale locale) {
+    public Insured findUserLogged(Locale locale) {
         String email = userServices.userLogged(locale);
         return insuredServices.findByInsureLogged(email, locale);
     }
