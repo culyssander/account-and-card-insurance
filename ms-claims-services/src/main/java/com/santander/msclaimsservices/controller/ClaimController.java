@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/claims")
+@RequestMapping("/v1/claims")
 @AllArgsConstructor
 public class ClaimController {
 
@@ -41,6 +41,11 @@ public class ClaimController {
 
     @PutMapping("/{claimId}/status")
     public ClaimResponseDto updateStatus(@Validated  @PathVariable String claimId, @RequestBody ClaimRequestStatusDto requestStatus, Locale locale) {
-        return claimServices.updateStatus(claimId, requestStatus, locale);
+        return claimServices.updateStatusDocOrReview(claimId, requestStatus, locale);
+    }
+
+    @PutMapping("/{claimId}/status/analysis")
+    public ClaimResponseDto updateStatusByAnalysis(@Validated  @PathVariable String claimId, @RequestBody ClaimRequestStatusDto requestStatus, Locale locale) {
+        return claimServices.updateStatusApprovedOrDenied(claimId, requestStatus,locale);
     }
 }
