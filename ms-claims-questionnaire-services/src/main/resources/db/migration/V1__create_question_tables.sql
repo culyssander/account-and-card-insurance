@@ -32,8 +32,8 @@ CREATE SEQUENCE questionnaire_session_id_seq START WITH 1 INCREMENT BY 50;
 CREATE TABLE questionnaire_session (
                                        id BIGINT NOT NULL DEFAULT nextval('questionnaire_session_id_seq') PRIMARY KEY,
                                        claim_id VARCHAR(36),
-                                       current_question_id BIGINT,
-                                       FOREIGN KEY (current_question_id) REFERENCES question(id)
+                                       current_question_id VARCHAR(10),
+                                       FOREIGN KEY (current_question_id) REFERENCES question(code)
 );
 ALTER SEQUENCE questionnaire_session_id_seq OWNED BY questionnaire_session.id;
 
@@ -42,12 +42,12 @@ CREATE TABLE answered_question (
                                    id BIGINT NOT NULL DEFAULT nextval('answered_question_id_seq') PRIMARY KEY,
                                    questionnaire_id BIGINT NOT NULL,
                                    claim_id VARCHAR(36) NOT NULL,
-                                   question_id BIGINT NOT NULL,
+                                   question_id VARCHAR(10) NOT NULL,
                                    answer TEXT,
                                    created_at TIMESTAMP DEFAULT now(),
-                                   next_question_id BIGINT,
+                                   next_question_id VARCHAR(10),
                                    FOREIGN KEY (questionnaire_id) REFERENCES questionnaire_session(id),
-                                   FOREIGN KEY (question_id) REFERENCES question(id),
-                                   FOREIGN KEY (next_question_id) REFERENCES question(id)
+                                   FOREIGN KEY (question_id) REFERENCES question(code),
+                                   FOREIGN KEY (next_question_id) REFERENCES question(code)
 );
 ALTER SEQUENCE answered_question_id_seq OWNED BY answered_question.id;
